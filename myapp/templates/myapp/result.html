@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .button-container button, .button-container a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover, .button-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>Hasil Compare Data :</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>HU</th>
+                <th>QTY</th>
+                <th>Source Handling Unit</th>
+                <th>Src Trgt Qty AUoM</th>
+                <th>Hasil Perbandingan</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, row in compared_data.iterrows %}
+                <tr>
+                    <td>{{ row.HU }}</td>
+                    <td>{{ row.QTY }}</td>
+                    <td>{{ row.Source_Handling_Unit }}</td>
+                    <td>{{ row.Src_Trgt_Qty_AUoM }}</td>
+                    <td>{{ row.Hasil_Perbandingan }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Tombol untuk mengunduh data perbandingan dalam format Excel -->
+    <div class="button-container">
+        <a href="{% url 'download_comparison_excel' %}" download>Unduh Data Perbandingan (Excel)</a>
+    </div>
+
+    <!-- Tautan untuk mengunduh seluruh data dari database -->
+    <div class="button-container">
+        <a href="{% url 'download_full_data' %}">Download Full Data</a>
+    </div>
+</body>
+</html>
