@@ -63,11 +63,11 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
-                <input type="file" id="file1" name="file1" accept=".xlsx">
+                <input type="file" id="file1" name="file1" accept=".xlsx" onchange="updateFileName('file1', 'file1-label')">
                 <label class="custom-file-label" id="file1-label" for="file1">Choose Data 1</label>
             </div>
             <div class="form-group">
-                <input type="file" id="file2" name="file2" accept=".xlsx">
+                <input type="file" id="file2" name="file2" accept=".xlsx" onchange="updateFileName('file2', 'file2-label')">
                 <label class="custom-file-label" id="file2-label" for="file2">Choose Data 2</label>
             </div>
             <button type="submit">Compare</button>
@@ -78,7 +78,9 @@
         function updateFileName(inputId, labelId) {
             const input = document.getElementById(inputId);
             const label = document.getElementById(labelId);
-            label.textContent = input.files[0].name;
+            if (input.files.length > 0) {
+                label.textContent = input.files[0].name;
+            }
         }
 
         document.getElementById('file1').addEventListener('change', function() {

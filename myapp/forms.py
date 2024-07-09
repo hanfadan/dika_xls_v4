@@ -1,5 +1,5 @@
 from django import forms
-from .models import UploadedFile
+from .models import UploadedFile, Material
 
 class UploadFileForm(forms.ModelForm):
     file1 = forms.FileField(label='File Pertama')
@@ -25,4 +25,7 @@ class UploadFileForm(forms.ModelForm):
         if file1.size > 10 * 1024 * 1024 or file2.size > 10 * 1024 * 1024:
             raise forms.ValidationError("Ukuran file terlalu besar. Maksimum 10 MB diizinkan.")
 
-      
+class MaterialForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ['name', 'description', 'quantity']

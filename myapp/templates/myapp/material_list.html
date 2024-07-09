@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Material List</title>
+</head>
+<body>
+    <h1>Material List</h1>
+    <ul>
+        {% for material in materials %}
+            <li>
+                <a href="{% url 'material_detail' material.pk %}">{{ material.name }}</a>
+                (<a href="{% url 'material_edit' material.pk %}">Edit</a>,
+                <a href="{% url 'material_delete' material.pk %}">Delete</a>)
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'material_create' %}">Add New Material</a>
+</body>
+</html>

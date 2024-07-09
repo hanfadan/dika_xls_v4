@@ -55,7 +55,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for index, row in compared_data.iterrows %}
+            {% for row in compared_data %}
                 <tr>
                     <td>{{ row.HU }}</td>
                     <td>{{ row.QTY }}</td>
@@ -67,13 +67,8 @@
         </tbody>
     </table>
 
-    <!-- Tombol untuk mengunduh data perbandingan dalam format Excel -->
     <div class="button-container">
         <a href="{% url 'download_comparison_excel' %}" download>Unduh Data Perbandingan (Excel)</a>
-    </div>
-
-    <!-- Tautan untuk mengunduh seluruh data dari database -->
-    <div class="button-container">
         <a href="{% url 'download_full_data' %}">Download Full Data</a>
     </div>
 </body>
