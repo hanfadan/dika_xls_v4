@@ -2,8 +2,10 @@ import pandas as pd
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from .forms import UploadFileForm, MaterialForm
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from .forms import LoginForm, UploadFileForm, MaterialForm
 from .models import ResultCompareData, Material
 import numpy as np
 
@@ -123,3 +125,17 @@ def material_delete(request, pk):
         material.delete()
         return redirect('material_list')
     return render(request, 'myapp/material_confirm_delete.html', {'material': material})
+
+def login_view(request):
+    form = LoginForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('upload_file')
+            else:
+                form.add_error(None, 'Username or password is incorrect')
+    return render(request, 'myapp/login.html', {'form': form})

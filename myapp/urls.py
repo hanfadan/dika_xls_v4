@@ -4,8 +4,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.upload_file, name='index'),  # Contoh pola URL untuk halaman beranda
+    path('', views.login_view, name='login'),  # Mengatur login sebagai halaman utama
+    path('upload/', views.upload_file, name='upload_file'),
     path('download/', views.download_comparison_excel, name='download_comparison_excel'),
     path('download/data', views.download_full_data, name='download_full_data'),
     path('materials/', views.material_list, name='material_list'),
