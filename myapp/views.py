@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm
-from .models import ResultCompareData, Material
+from .models import ResultCompareData, Material, MaterialRequest, CustomUser
 
 def compare_excel_files(file1_path, file2_path):
     try:
@@ -96,7 +96,14 @@ def download_full_data(request):
 @login_required
 def material_list(request):
     materials = Material.objects.all()
-    return render(request, 'myapp/material_list.html', {'materials': materials})
+    total_material_checked = materials.count()
+    material_request_sent = MaterialRequest.objects.filter(requester=request.user).count()
+
+    return render(request, 'myapp/material_list.html', {
+        'materials': materials,
+        'total_material_checked': total_material_checked,
+        'material_request_sent': material_request_sent,
+    })
 
 @login_required
 def material_detail(request, pk):
@@ -223,7 +230,14 @@ def view_history(request):
 
 @login_required
 def view_division(request):
-    return render(request, 'myapp/supervisor_view_division.html')
+    users = CustomUser.objects.all()
+    context = {
+        'users': users,
+        'total_divisions': users.count(),
+        'active_divisions': users.filter(is_active=True).count()
+    }
+    return render(request, 'myapp/supervisor_view_division.html', context)
+
 
 @login_required
 def create_division(request):
@@ -240,5 +254,11 @@ def edit_division(request):
 @login_required
 def delete_division(request):
     if request.method == 'POST':
-        return redirect('view_division')
-    return render(request, 'myapp/supervisor_delete_division.html')
+        user_ids = request.POST.getlist('user_ids')
+        User.objects.filter(id__in=user_ids).delete()
+        messages.success(request, 'Users deleted successfully')
+        return redirect('supervisor_view_users')
+    
+    users = CustomUser.objects.all()
+    return render(request, 'myapp/supervisor_delete_division.html', {'users': users})
+

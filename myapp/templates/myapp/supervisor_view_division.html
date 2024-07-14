@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Supervisor Edit Data Material</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor - View Division</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
 </head>
@@ -34,46 +35,41 @@
     </div>
     <div class="main-content">
         <div class="header">
-            <h1>Edit Data Material</h1>
+            <h1>Division / View</h1>
             <div class="user-profile">
                 <span>Supervisor</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
                 <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
             </div>
         </div>
-        <div class="dashboard-cards">
-            <div class="card">
-                <h3>Total Material Checked</h3>
-                <p>{{ total_material_checked }}</p>
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Division / View</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Search Username">
+                </div>
             </div>
-            <div class="card">
-                <h3>Material Request Sent</h3>
-                <p>{{ material_request_sent }}</p>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>******</td>
+                            <td>{{ user.get_role_display }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for material in materials %}
-                <tr>
-                    <td>{{ material.name }}</td>
-                    <td>{{ material.description }}</td>
-                    <td>{{ material.quantity }}</td>
-                    <td class="actions">
-                        <a href="{% url 'material_edit' material.pk %}"><button class="edit">Edit</button></a>
-                        <a href="{% url 'material_delete' material.pk %}"><button class="delete">Delete</button></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
     <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
     <script>
