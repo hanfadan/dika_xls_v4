@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+import numpy as np
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -8,89 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm
 from .models import ResultCompareData, Material, MaterialRequest, CustomUser
-
-def compare_excel_files(file1_path, file2_path):
-    try:
-        df1 = pd.read_excel(file1_path, sheet_name='Recap', usecols=['HU', 'QTY'])
-        df2 = pd.read_excel(file2_path, usecols=['Src Trgt Qty AUoM', 'Source Handling Unit'])
-        arr_df1 = df1.astype(str).to_numpy()
-        arr_df2 = df2.astype(str).to_numpy()
-        comparison_result = []
-
-        for row1 in arr_df1:
-            hu1 = row1[0]
-            qty1 = row1[1]
-            if hu1 in ['0', 'NaN', '']:
-                continue
-            matching_row_indices = np.where(arr_df2[:, 1] == hu1)[0]
-            if len(matching_row_indices) == 0:
-                comparison_result.append([hu1, qty1, '', '', 'Tidak ditemukan'])
-            for index in matching_row_indices:
-                source_handling_unit = arr_df2[index][1]
-                qty2 = arr_df2[index][0]
-                result = 'Cocok' if qty1 == qty2 else 'Tidak Cocok'
-                comparison_result.append([hu1, qty1, qty2, source_handling_unit, result])
-
-        if len(comparison_result) == 0:
-            comparison_result.append(['', '', '', '', 'Tidak ditemukan'])
-
-        compared_data = pd.DataFrame(comparison_result, columns=['HU', 'QTY', 'Src_Trgt_Qty_AUoM', 'Source_Handling_Unit', 'Hasil_Perbandingan'])
-        return compared_data
-    except Exception as e:
-        print("Error:", e)
-        return pd.DataFrame(columns=['HU', 'QTY', 'Src_Trgt_Qty_AUoM', 'Source_Handling_Unit', 'Hasil_Perbandingan'])
-
-@login_required
-def upload_file(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            uploaded_file1 = request.FILES['file1']
-            uploaded_file2 = request.FILES['file2']
-            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-            filename1 = fs.save(uploaded_file1.name, uploaded_file1)
-            filename2 = fs.save(uploaded_file2.name, uploaded_file2)
-            file1_path = fs.path(filename1)
-            file2_path = fs.path(filename2)
-            compared_data = compare_excel_files(file1_path, file2_path)
-
-            for index, row in compared_data.iterrows():
-                result = ResultCompareData(
-                    HU=row['HU'],
-                    QTY=row['QTY'],
-                    Src_Trgt_Qty_AUoM=row['Src_Trgt_Qty_AUoM'],
-                    Source_Handling_Unit=row['Source_Handling_Unit'],
-                    Hasil_Perbandingan=row['Hasil_Perbandingan']
-                )
-                result.save()
-
-            request.session['compared_data'] = compared_data.to_dict(orient='records')
-            return render(request, 'myapp/result.html', {'compared_data': compared_data})
-    else:
-        form = UploadFileForm()
-    return render(request, 'myapp/upload.html', {'form': form})
-
-@login_required
-def download_comparison_excel(request):
-    compared_data = request.session.get('compared_data')
-    df = pd.DataFrame(compared_data)
-    output_file = 'comparison_results.xlsx'
-    df.to_excel(output_file, index=False)
-    with open(output_file, 'rb') as file:
-        response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename={output_file}'
-        return response
-
-@login_required
-def download_full_data(request):
-    all_data = ResultCompareData.objects.all()
-    df = pd.DataFrame(list(all_data.values()))
-    output_file = 'full_data_results.xlsx'
-    df.to_excel(output_file, index=False)
-    with open(output_file, 'rb') as file:
-        response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename={output_file}'
-        return response
 
 # Fungsi CRUD Material
 @login_required
@@ -210,7 +129,8 @@ def supervisor_delete_user(request):
 
 @login_required
 def production_dashboard(request):
-    return render(request, 'myapp/production_dashboard.html')
+    total_material_checked = Material.objects.count()
+    return render(request, 'myapp/production_dashboard.html', {'total_material_checked': total_material_checked})
 
 @login_required
 def warehouse_dashboard(request):
@@ -219,13 +139,25 @@ def warehouse_dashboard(request):
 @login_required
 def send_request(request):
     if request.method == 'POST':
-        # logic to handle request submission
+        material_name = request.POST.get('material_name')
+        quantity = request.POST.get('quantity')
+        date = request.POST.get('date')
+        
+        # Simpan permintaan material ke database
+        MaterialRequest.objects.create(
+            requester=request.user,
+            material_name=material_name,
+            quantity=quantity,
+            date=date
+        )
+        
+        messages.success(request, 'Request sent successfully')
         return redirect('view_history')
     return render(request, 'myapp/supervisor_request_material.html')
 
 @login_required
 def view_history(request):
-    materials = Material.objects.all()  # Adjust as per your model
+    materials = MaterialRequest.objects.all()
     return render(request, 'myapp/supervisor_view_history.html', {'materials': materials})
 
 @login_required
@@ -262,3 +194,153 @@ def delete_division(request):
     users = CustomUser.objects.all()
     return render(request, 'myapp/supervisor_delete_division.html', {'users': users})
 
+@login_required
+def production_check_data(request):
+    materials = Material.objects.all()
+    return render(request, 'myapp/production_check_data.html', {'materials': materials})
+
+@login_required
+def production_download_data(request):
+    materials = Material.objects.all()
+    df = pd.DataFrame(list(materials.values()))
+    output_file = 'material_data.xlsx'
+    df.to_excel(output_file, index=False)
+    with open(output_file, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename={output_file}'
+        return response
+
+@login_required
+def compare_excel_files(file1_path, file2_path):
+    try:
+        # Membaca data dari file pertama
+        df1 = pd.read_excel(file1_path, sheet_name='Recap', usecols=['HU', 'QTY'])
+        
+        # Membaca data dari file kedua
+        df2 = pd.read_excel(file2_path, usecols=['Src Trgt Qty AUoM', 'Source Handling Unit'])
+  
+        # Mengubah DataFrame menjadi array untuk perbandingan
+        arr_df1 = df1.astype(str).to_numpy()  # Mengonversi ke string
+        arr_df2 = df2.astype(str).to_numpy()  # Mengonversi ke string
+        
+        # Membuat array untuk menyimpan hasil perbandingan
+        comparison_result = []
+        
+        # Looping melalui setiap baris di arr_df1 untuk mencocokkan dengan arr_df2
+        for row1 in arr_df1:
+            hu1 = row1[0]  # HU dari arr_df1
+            qty1 = row1[1] # QTY dari arr_df1
+            
+            # Jika HU dari df1 adalah 0, NaN, atau kosong, abaikan
+            if hu1 in ['0', 'NaN', '']:
+                continue
+            
+            # Mencari apakah HU dari arr_df1 ada di kolom "Source Handling Unit" di arr_df2
+            matching_row_indices = np.where(arr_df2[:, 1] == hu1)[0]
+            
+            if len(matching_row_indices) == 0:
+                # Jika tidak ditemukan HU yang cocok di df2
+                comparison_result.append([hu1, qty1, '', '', 'Tidak ditemukan'])
+            
+            for index in matching_row_indices:
+                source_handling_unit = arr_df2[index][1]  # Source Handling Unit dari arr_df2
+                qty2 = arr_df2[index][0]  # Src Trgt Qty AUoM dari arr_df2
+                
+                # Membandingkan nilai QTY
+                result = 'Cocok' if qty1 == qty2 else 'Tidak Cocok'
+                
+                # Menambahkan hasil perbandingan ke array comparison_result
+                comparison_result.append([hu1, qty1, qty2, source_handling_unit, result])
+        
+        # Jika tidak ada data yang cocok ditemukan
+        if len(comparison_result) == 0:
+            comparison_result.append(['', '', '', '', 'Tidak ditemukan'])
+        
+        # Membuat DataFrame dari array comparison_result
+        compared_data = pd.DataFrame(comparison_result, columns=['HU', 'QTY', 'Src_Trgt_Qty_AUoM', 'Source_Handling_Unit', 'Hasil_Perbandingan'])
+
+        return compared_data
+    except Exception as e:
+        print("Error:", e)
+        return pd.DataFrame(columns=['HU', 'QTY', 'Src_Trgt_Qty_AUoM', 'Source_Handling_Unit', 'Hasil_Perbandingan'])
+
+@login_required
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file1 = request.FILES['file1']
+            uploaded_file2 = request.FILES['file2']
+            
+            # Menyimpan kedua file yang diunggah
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+            filename1 = fs.save(uploaded_file1.name, uploaded_file1)
+            filename2 = fs.save(uploaded_file2.name, uploaded_file2)
+
+            # Melakukan perbandingan kedua file
+            file1_path = fs.path(filename1)
+            file2_path = fs.path(filename2)
+            compared_data = compare_excel_files(file1_path, file2_path)
+            
+            # Menghapus kedua file yang diunggah dari sistem penyimpanan
+            # fs.delete(filename1)
+            # fs.delete(filename2)
+
+            # Menyimpan data perbandingan ke database
+            for index, row in compared_data.iterrows():
+                result = ResultCompareData(
+                    HU=row['HU'],
+                    QTY=row['QTY'],
+                    Src_Trgt_Qty_AUoM=row['Src_Trgt_Qty_AUoM'],
+                    Source_Handling_Unit=row['Source_Handling_Unit'],
+                    Hasil_Perbandingan=row['Hasil_Perbandingan']
+                )
+                result.save()
+
+             # Simpan data perbandingan dalam sesi
+            request.session['compared_data'] = compared_data.to_dict(orient='records')
+
+            # Mengirimkan hasil perbandingan ke template
+            return render(request, 'myapp/result.html', {'compared_data': compared_data})
+    else:
+        form = UploadFileForm()
+    return render(request, 'myapp/upload.html', {'form': form})
+
+@login_required
+def download_comparison_excel(request):
+    # Dapatkan data perbandingan dari sesi
+    compared_data = request.session.get('compared_data')
+
+    # Buat DataFrame dari data perbandingan
+    df = pd.DataFrame(compared_data)
+
+    # Simpan DataFrame ke file Excel (XLSX)
+    output_file = 'comparison_results.xlsx'
+    df.to_excel(output_file, index=False)
+
+    # Baca file Excel dan kirimkan sebagai respons HTTP
+    with open(output_file, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename={output_file}'
+        return response
+
+def production_download_data_view(request):
+    return render(request, 'myapp/production_download_data.html')
+
+@login_required    
+def download_full_data(request):
+    # Ambil semua data dari database
+    all_data = ResultCompareData.objects.all()
+
+    # Buat DataFrame dari data
+    df = pd.DataFrame(list(all_data.values()))
+
+    # Simpan DataFrame ke file Excel (XLSX)
+    output_file = 'full_data_results.xlsx'
+    df.to_excel(output_file, index=False)
+
+    # Baca file Excel dan kirimkan sebagai respons HTTP
+    with open(output_file, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename={output_file}'
+        return response

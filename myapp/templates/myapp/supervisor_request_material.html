@@ -2,67 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Supervisor Request Material</title>
-    <link rel="stylesheet" href="{% static 'myapp/supervisor.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Material</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'myapp/logo.png' %}" alt="Logo">
-            </div>
-            <ul>
-                <li><a href="{% url 'supervisor_dashboard' %}">Data Material</a></li>
-                <li>
-                    <a href="#">Divison</a>
-                    <ul>
-                        <li><a href="{% url 'view_division' %}">View</a></li>
-                        <li><a href="{% url 'create_division' %}">Create</a></li>
-                        <li><a href="{% url 'edit_division' %}">Edit</a></li>
-                        <li><a href="{% url 'delete_division' %}">Delete</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Request Material</a>
-                    <ul>
-                        <li><a href="{% url 'send_request' %}">Send Request</a></li>
-                        <li><a href="{% url 'view_history' %}">View History</a></li>
-                    </ul>
-                </li>
-            </ul>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="{% static 'myapp/assets/logo.png' %}" alt="Logo">
+            <p>Supervisor Panel</p>
         </div>
-        <div class="main-content">
-            <header>
-                <h2>Request Material to Warehouse</h2>
-                <div class="user-wrapper">
-                    <img src="{% static 'myapp/user.png' %}" alt="User" width="30">
-                    <div>
-                        <h4>{{ user.username }}</h4>
-                        <small>Supervisor</small>
-                    </div>
+        <ul>
+            <li><a href="{% url 'supervisor_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
+            <p>Menu</p>
+            <li><a href="{% url 'material_list' %}"><img src="{% static 'myapp/assets/group.png' %}" alt="Group"> Data Material</a></li>
+            <li class="has-submenu"><a href="#"><img src="{% static 'myapp/assets/group.png' %}" alt="Group"> Division</a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'view_division' %}">View</a></li>
+                    <li><a href="{% url 'create_division' %}">Create</a></li>
+                    <li><a href="{% url 'edit_division' %}">Edit</a></li>
+                    <li><a href="{% url 'delete_division' %}">Delete</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu"><a href="#"><img src="{% static 'myapp/assets/group.png' %}" alt="Request"> Request Material</a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'send_request' %}">Send Request</a></li>
+                    <li><a href="{% url 'view_history' %}">View History</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>Request Material to Warehouse</h1>
+            <div class="user-profile">
+                <span>Supervisor</span>
+                <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
+                <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+            </div>
+        </div>
+        <div class="form-container">
+            <form method="post" action="{% url 'send_request' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="material_name"><img src="{% static 'myapp/assets/material.png' %}" alt="Material Name"> Material Name</label>
+                    <input type="text" id="material_name" name="material_name" required>
                 </div>
-            </header>
-            <main>
-                <form class="form-container" method="post" action="{% url 'send_request' %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="material_name">Material Name</label>
-                        <input type="text" id="material_name" name="material_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-save">Submit</button>
-                    </div>
-                </form>
-            </main>
+                <div class="form-group">
+                    <label for="quantity"><img src="{% static 'myapp/assets/quantity.png' %}" alt="Quantity"> Quantity</label>
+                    <input type="number" id="quantity" name="quantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="date"><img src="{% static 'myapp/assets/date.png' %}" alt="Date"> Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save">Submit</button>
+                    <a href="{% url 'supervisor_view_users' %}" class="btn btn-discard">Discard</a>
+                </div>
+            </form>
         </div>
     </div>
+    <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
 </body>
 </html>

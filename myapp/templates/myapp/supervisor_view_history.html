@@ -2,71 +2,110 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Supervisor View Division</title>
-    <link rel="stylesheet" href="{% static 'myapp/supervisor.css' %}">
+    <title>Supervisor - View Material History</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'myapp/logo.png' %}" alt="Logo">
-            </div>
-            <ul>
-                <li><a href="{% url 'supervisor_dashboard' %}">Data Material</a></li>
-                <li>
-                    <a href="#">Divison</a>
-                    <ul>
-                        <li><a href="{% url 'view_division' %}">View</a></li>
-                        <li><a href="{% url 'create_division' %}">Create</a></li>
-                        <li><a href="{% url 'edit_division' %}">Edit</a></li>
-                        <li><a href="{% url 'delete_division' %}">Delete</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Request Material</a>
-                    <ul>
-                        <li><a href="{% url 'send_request' %}">Send Request</a></li>
-                        <li><a href="{% url 'view_history' %}">View History</a></li>
-                    </ul>
-                </li>
-            </ul>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="{% static 'myapp/assets/logo.png' %}" alt="Logo">
+            <p>Supervisor Panel</p>
         </div>
-        <div class="main-content">
-            <header>
+        <ul>
+            <li><a href="{% url 'supervisor_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
+            <p>Menu</p>
+            <li><a href="{% url 'material_list' %}"><img src="{% static 'myapp/assets/group.png' %}" alt="Group"> Data Material</a></li>
+            <li class="has-submenu"><a href="#"><img src="{% static 'myapp/assets/group.png' %}" alt="Group"> Division</a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'view_division' %}">View</a></li>
+                    <li><a href="{% url 'create_division' %}">Create</a></li>
+                    <li><a href="{% url 'edit_division' %}">Edit</a></li>
+                    <li><a href="{% url 'delete_division' %}">Delete</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu"><a href="#"><img src="{% static 'myapp/assets/group.png' %}" alt="Request"> Request Material</a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'send_request' %}">Send Request</a></li>
+                    <li><a href="{% url 'view_history' %}">View History</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>Material History</h1>
+            <div class="user-profile">
+                <span>Supervisor</span>
+                <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
+                <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+            </div>
+        </div>
+        <div class="table-container">
+            <div class="table-header">
                 <h2>Material History</h2>
-                <div class="user-wrapper">
-                    <img src="{% static 'myapp/user.png' %}" alt="User" width="30">
-                    <div>
-                        <h4>{{ user.username }}</h4>
-                        <small>Supervisor</small>
-                    </div>
+                <div class="search-box">
+                    <input type="text" placeholder="Search Material" id="searchInput" onkeyup="searchTable()">
                 </div>
-            </header>
-            <main>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Material Name</th>
-                            <th>Quantity</th>
-                            <th>Date</th>
-                            <th>Shipping Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for material in materials %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ material.name }}</td>
-                            <td>{{ material.quantity }}</td>
-                            <td>{{ material.date }}</td>
-                            <td><a href="{{ material.shipping_data_url }}" class="btn btn-download">Download</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </main>
+            </div>
+            <table id="materialTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Material Name</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Shipping Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for material in materials %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ material.name }}</td>
+                        <td>{{ material.quantity }}</td>
+                        <td>{{ material.date }}</td>
+                        <td><a href="{{ material.shipping_data_url }}" class="btn btn-download">Download</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+    <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            });
+        });
+
+        function searchTable() {
+            var input, filter, table, tr, td, i, j, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("materialTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 1; i < tr.length; i++) {
+                tr[i].style.display = "none";
+                td = tr[i].getElementsByTagName("td");
+                for (j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>

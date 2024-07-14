@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Operator Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="{% static 'myapp/assets/logo.png' %}" alt="Logo">
+            <p>Operator Panel</p>
+        </div>
+        <ul>
+            <li><a href="{% url 'production_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
+            <p>Menu</p>
+            <li><a href="{% url 'production_check_data' %}"><img src="{% static 'myapp/assets/group.png' %}" alt="Check Data Material"> Check Data Material</a></li>
+            <li><a href="{% url 'production_download_data_view' %}"><img src="{% static 'myapp/assets/group.png' %}" alt="Download Data"> Download Data</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>Welcome, operator!</h1>
+            <div class="user-profile">
+                <span>Operator</span>
+                <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
+                <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+            </div>
+        </div>
+        <div class="dashboard-cards">
+            <div class="card">
+                <h3>Total Material Checked</h3>
+                <p>{{ total_material_checked }}</p>
+            </div>
+        </div>
+    </div>
+    <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>

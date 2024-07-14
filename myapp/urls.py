@@ -29,6 +29,10 @@ urlpatterns = [
 
     # Production Staff URLs
     path('production_dashboard/', views.production_dashboard, name='production_dashboard'),
+    path('production_check_data/', views.production_check_data, name='production_check_data'),
+    path('production_compare_data/', views.compare_excel_files, name='production_compare_data'),
+    path('production_download_data_view/', views.production_download_data_view, name='production_download_data_view'), # Tampilan halaman download data
+    path('download_full_data/', views.download_full_data, name='download_full_data'), # Proses download data
 
     # Warehouse Staff URLs
     path('warehouse_dashboard/', views.warehouse_dashboard, name='warehouse_dashboard'),
