@@ -77,20 +77,9 @@
             
             <button type="submit">Login</button>
         </form>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
     </div>
-
-    <script>
-        // JavaScript untuk mengubah judul berdasarkan tipe pengguna
-        var userRole = "{{ user.role }}"; // Ambil peran pengguna dari backend
-        var titleElement = document.getElementById('user-role-title');
-        
-        if (userRole === 'supervisor') {
-            titleElement.textContent = 'Supervisor Login';
-        } else if (userRole === 'operator') {
-            titleElement.textContent = 'Operator Login';
-        } else if (userRole === 'warehouse') {
-            titleElement.textContent = 'Warehouse Staff Login';
-        }
-    </script>
 </body>
 </html>

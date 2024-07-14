@@ -101,6 +101,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Custom User Model
+AUTH_USER_MODEL = 'myapp.CustomUser'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -124,6 +127,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# media root
+# Media root
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')

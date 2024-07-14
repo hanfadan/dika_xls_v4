@@ -6,10 +6,8 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
-from django.shortcuts import render, redirect
-from .forms import LoginForm, UploadFileForm, MaterialForm , UserForm
+from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm
 from .models import ResultCompareData, Material
-import numpy as np
 
 def compare_excel_files(file1_path, file2_path):
     try:
@@ -42,6 +40,7 @@ def compare_excel_files(file1_path, file2_path):
         print("Error:", e)
         return pd.DataFrame(columns=['HU', 'QTY', 'Src_Trgt_Qty_AUoM', 'Source_Handling_Unit', 'Hasil_Perbandingan'])
 
+@login_required
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -71,6 +70,7 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, 'myapp/upload.html', {'form': form})
 
+@login_required
 def download_comparison_excel(request):
     compared_data = request.session.get('compared_data')
     df = pd.DataFrame(compared_data)
@@ -81,6 +81,7 @@ def download_comparison_excel(request):
         response['Content-Disposition'] = f'attachment; filename={output_file}'
         return response
 
+@login_required
 def download_full_data(request):
     all_data = ResultCompareData.objects.all()
     df = pd.DataFrame(list(all_data.values()))
@@ -92,14 +93,17 @@ def download_full_data(request):
         return response
 
 # Fungsi CRUD Material
+@login_required
 def material_list(request):
     materials = Material.objects.all()
     return render(request, 'myapp/material_list.html', {'materials': materials})
 
+@login_required
 def material_detail(request, pk):
     material = get_object_or_404(Material, pk=pk)
     return render(request, 'myapp/material_detail.html', {'material': material})
 
+@login_required
 def material_create(request):
     if request.method == 'POST':
         form = MaterialForm(request.POST)
@@ -110,6 +114,7 @@ def material_create(request):
         form = MaterialForm()
     return render(request, 'myapp/material_form.html', {'form': form})
 
+@login_required
 def material_edit(request, pk):
     material = get_object_or_404(Material, pk=pk)
     if request.method == 'POST':
@@ -121,6 +126,7 @@ def material_edit(request, pk):
         form = MaterialForm(instance=material)
     return render(request, 'myapp/material_form.html', {'form': form})
 
+@login_required
 def material_delete(request, pk):
     material = get_object_or_404(Material, pk=pk)
     if request.method == 'POST':
@@ -137,7 +143,14 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('upload_file')
+                if user.role == 'supervisor':
+                    return redirect('supervisor_dashboard')
+                elif user.role == 'production':
+                    return redirect('production_dashboard')
+                elif user.role == 'warehouse':
+                    return redirect('warehouse_dashboard')
+                else:
+                    form.add_error(None, 'User role is not defined')
             else:
                 form.add_error(None, 'Username or password is incorrect')
     return render(request, 'myapp/login.html', {'form': form})
@@ -146,12 +159,12 @@ User = get_user_model()
 
 @login_required
 def supervisor_dashboard(request):
-    return render(request, 'supervisor_dashboard.html')
+    return render(request, 'myapp/supervisor_dashboard.html')
 
 @login_required
 def supervisor_view_users(request):
     users = User.objects.all()
-    return render(request, 'supervisor_view_users.html', {'users': users})
+    return render(request, 'myapp/supervisor_view_users.html', {'users': users})
 
 @login_required
 def supervisor_create_user(request):
@@ -163,7 +176,7 @@ def supervisor_create_user(request):
             return redirect('supervisor_view_users')
     else:
         form = UserForm()
-    return render(request, 'supervisor_create_user.html', {'form': form})
+    return render(request, 'myapp/supervisor_create_user.html', {'form': form})
 
 @login_required
 def supervisor_edit_user(request, user_id):
@@ -176,7 +189,7 @@ def supervisor_edit_user(request, user_id):
             return redirect('supervisor_view_users')
     else:
         form = UserForm(instance=user)
-    return render(request, 'supervisor_edit_user.html', {'form': form})
+    return render(request, 'myapp/supervisor_edit_user.html', {'form': form})
 
 @login_required
 def supervisor_delete_user(request):
@@ -186,12 +199,15 @@ def supervisor_delete_user(request):
         messages.success(request, 'Users deleted successfully')
         return redirect('supervisor_view_users')
     users = User.objects.all()
-    return render(request, 'supervisor_delete_user.html', {'users': users})
+    return render(request, 'myapp/supervisor_delete_user.html', {'users': users})
 
 @login_required
-def supervisor_dashboard(request):
-    # logic for supervisor dashboard
-    return render(request, 'myapp/supervisor_dashboard.html')
+def production_dashboard(request):
+    return render(request, 'myapp/production_dashboard.html')
+
+@login_required
+def warehouse_dashboard(request):
+    return render(request, 'myapp/warehouse_dashboard.html')
 
 @login_required
 def send_request(request):
@@ -207,26 +223,22 @@ def view_history(request):
 
 @login_required
 def view_division(request):
-    # logic for viewing division
     return render(request, 'myapp/supervisor_view_division.html')
 
 @login_required
 def create_division(request):
     if request.method == 'POST':
-        # logic to handle division creation
         return redirect('view_division')
     return render(request, 'myapp/supervisor_create_division.html')
 
 @login_required
 def edit_division(request):
     if request.method == 'POST':
-        # logic to handle division edit
         return redirect('view_division')
     return render(request, 'myapp/supervisor_edit_division.html')
 
 @login_required
 def delete_division(request):
     if request.method == 'POST':
-        # logic to handle division deletion
         return redirect('view_division')
     return render(request, 'myapp/supervisor_delete_division.html')

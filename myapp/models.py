@@ -15,7 +15,7 @@ class ResultCompareData(models.Model):
     Source_Handling_Unit = models.CharField(max_length=100)
     Hasil_Perbandingan = models.CharField(max_length=100)
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ('supervisor', 'Supervisor'),
         ('production', 'Production Staff'),
@@ -25,14 +25,14 @@ class User(AbstractUser):
     
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='myapp_user_set',  # Tambahkan related_name
+        related_name='custom_user_set',  # Tambahkan related_name
         blank=True,
         help_text='The groups this user belongs to.',
         verbose_name='groups',
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='myapp_user_set',  # Tambahkan related_name
+        related_name='custom_user_set',  # Tambahkan related_name
         blank=True,
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
@@ -48,7 +48,7 @@ class Material(models.Model):
 
 class MaterialRequest(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
-    requester = models.ForeignKey(User, on_delete=models.CASCADE)
+    requester = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, default='pending')
 
