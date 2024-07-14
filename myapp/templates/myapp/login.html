@@ -2,66 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #2C3E50;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
-        .container {
-            background-color: #fff;
+        .login-container {
+            background-color: white;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 300px;
             text-align: center;
         }
-        h2 {
+        .login-container h2 {
             margin-bottom: 20px;
         }
-        .form-group {
-            margin-bottom: 20px;
+        .login-container label {
+            display: block;
+            margin-bottom: 10px;
         }
-        input {
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
-            box-sizing: border-box;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-        button {
-            background-color: #28a745;
-            color: #fff;
+        .login-container button {
+            width: 100%;
+            padding: 10px;
             border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #218838;
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+        .login-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .login-container .remember-me {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Login</h2>
+    <div class="login-container">
+        <h2 id="user-role-title">Login</h2> <!-- Title yang akan diubah berdasarkan pengguna -->
         <form method="post">
             {% csrf_token %}
-            <div class="form-group">
-                {{ form.username.label_tag }}
-                {{ form.username }}
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            
+            <div class="remember-me">
+                <label>
+                    <input type="checkbox" name="remember-me"> Remember me on this device?
+                </label>
             </div>
-            <div class="form-group">
-                {{ form.password.label_tag }}
-                {{ form.password }}
-            </div>
+            
             <button type="submit">Login</button>
         </form>
     </div>
+
+    <script>
+        // JavaScript untuk mengubah judul berdasarkan tipe pengguna
+        var userRole = "{{ user.role }}"; // Ambil peran pengguna dari backend
+        var titleElement = document.getElementById('user-role-title');
+        
+        if (userRole === 'supervisor') {
+            titleElement.textContent = 'Supervisor Login';
+        } else if (userRole === 'operator') {
+            titleElement.textContent = 'Operator Login';
+        } else if (userRole === 'warehouse') {
+            titleElement.textContent = 'Warehouse Staff Login';
+        }
+    </script>
 </body>
 </html>

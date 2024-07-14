@@ -3,9 +3,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages 
 from django.shortcuts import render, redirect
-from .forms import LoginForm, UploadFileForm, MaterialForm
+from .forms import LoginForm, UploadFileForm, MaterialForm , UserForm
 from .models import ResultCompareData, Material
 import numpy as np
 
@@ -139,3 +141,92 @@ def login_view(request):
             else:
                 form.add_error(None, 'Username or password is incorrect')
     return render(request, 'myapp/login.html', {'form': form})
+
+User = get_user_model()
+
+@login_required
+def supervisor_dashboard(request):
+    return render(request, 'supervisor_dashboard.html')
+
+@login_required
+def supervisor_view_users(request):
+    users = User.objects.all()
+    return render(request, 'supervisor_view_users.html', {'users': users})
+
+@login_required
+def supervisor_create_user(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User created successfully')
+            return redirect('supervisor_view_users')
+    else:
+        form = UserForm()
+    return render(request, 'supervisor_create_user.html', {'form': form})
+
+@login_required
+def supervisor_edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User updated successfully')
+            return redirect('supervisor_view_users')
+    else:
+        form = UserForm(instance=user)
+    return render(request, 'supervisor_edit_user.html', {'form': form})
+
+@login_required
+def supervisor_delete_user(request):
+    if request.method == 'POST':
+        user_ids = request.POST.getlist('user_ids')
+        User.objects.filter(id__in=user_ids).delete()
+        messages.success(request, 'Users deleted successfully')
+        return redirect('supervisor_view_users')
+    users = User.objects.all()
+    return render(request, 'supervisor_delete_user.html', {'users': users})
+
+@login_required
+def supervisor_dashboard(request):
+    # logic for supervisor dashboard
+    return render(request, 'myapp/supervisor_dashboard.html')
+
+@login_required
+def send_request(request):
+    if request.method == 'POST':
+        # logic to handle request submission
+        return redirect('view_history')
+    return render(request, 'myapp/supervisor_request_material.html')
+
+@login_required
+def view_history(request):
+    materials = Material.objects.all()  # Adjust as per your model
+    return render(request, 'myapp/supervisor_view_history.html', {'materials': materials})
+
+@login_required
+def view_division(request):
+    # logic for viewing division
+    return render(request, 'myapp/supervisor_view_division.html')
+
+@login_required
+def create_division(request):
+    if request.method == 'POST':
+        # logic to handle division creation
+        return redirect('view_division')
+    return render(request, 'myapp/supervisor_create_division.html')
+
+@login_required
+def edit_division(request):
+    if request.method == 'POST':
+        # logic to handle division edit
+        return redirect('view_division')
+    return render(request, 'myapp/supervisor_edit_division.html')
+
+@login_required
+def delete_division(request):
+    if request.method == 'POST':
+        # logic to handle division deletion
+        return redirect('view_division')
+    return render(request, 'myapp/supervisor_delete_division.html')

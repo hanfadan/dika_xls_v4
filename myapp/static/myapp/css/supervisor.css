@@ -1,0 +1,206 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background: #2E3A59;
+    padding-top: 20px;
+    min-height: 100vh;
+}
+
+.sidebar .logo img {
+    width: 100px;
+    margin: 0 auto;
+    display: block;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    text-align: left;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    background: #575c66;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.main-content header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-content header h2 {
+    margin: 0;
+}
+
+.main-content .user-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.main-content .user-wrapper img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.main-content main {
+    margin-top: 20px;
+}
+
+main table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+main table, main th, main td {
+    border: 1px solid #ddd;
+}
+
+main th, main td {
+    padding: 8px;
+    text-align: left;
+}
+
+main th {
+    background-color: #f2f2f2;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+}
+
+.form-actions .btn-save {
+    background-color: #28a745;
+}
+
+.form-actions .btn-discard {
+    background-color: #dc3545;
+}
+
+.form-actions .btn:hover {
+    opacity: 0.8;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+/* Form Styling */
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-save {
+    background-color: #28a745;
+}
+
+.btn-discard {
+    background-color: #dc3545;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}

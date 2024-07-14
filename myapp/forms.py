@@ -1,5 +1,6 @@
 from django import forms
 from .models import UploadedFile, Material
+from django.contrib.auth import get_user_model
 
 class UploadFileForm(forms.ModelForm):
     file1 = forms.FileField(label='File Pertama')
@@ -33,3 +34,13 @@ class MaterialForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100)
     password = forms.CharField(widget=forms.PasswordInput)
+
+    User = get_user_model()
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'role']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }

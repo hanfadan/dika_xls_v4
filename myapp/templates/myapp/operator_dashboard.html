@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Operator Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/operator.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
+            </div>
+            <ul>
+                <li><a href="{% url 'operator_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'check_data_material' %}">Check Data Material</a></li>
+                <li><a href="{% url 'download_data' %}">Download Data</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <header>
+                <h2>Home</h2>
+                <div class="user-wrapper">
+                    <img src="{% static 'images/user.png' %}" width="30px" height="30px" alt="">
+                    <div>
+                        <h4>Operator</h4>
+                        <small>Operator</small>
+                    </div>
+                </div>
+            </header>
+            <main>
+                <h3>Welcome, operator!</h3>
+                <div class="cards">
+                    <div class="card-single">
+                        <h4>Total Material Checked</h4>
+                        <span>XXX</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

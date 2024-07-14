@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supervisor Edit Data Material</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2C3E50;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            margin: 0;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .sidebar ul li a:hover {
+            background-color: #34495E;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .header {
+            background-color: #34495E;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+        .actions button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .actions .edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .actions .delete {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Supervisor Panel</h2>
+        <ul>
+            <li><a href="#">Data Material</a></li>
+            <li><a href="#">Divison</a>
+                <ul>
+                    <li><a href="#">View</a></li>
+                    <li><a href="#">Create</a></li>
+                    <li><a href="#">Edit</a></li>
+                    <li><a href="#">Delete</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Request Material</a>
+                <ul>
+                    <li><a href="#">Send Request</a></li>
+                    <li><a href="#">View History</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>

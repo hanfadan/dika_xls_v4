@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supervisor View Division</title>
+    <link rel="stylesheet" href="{% static 'myapp/supervisor.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'myapp/logo.png' %}" alt="Logo">
+            </div>
+            <ul>
+                <li><a href="{% url 'supervisor_dashboard' %}">Data Material</a></li>
+                <li>
+                    <a href="#">Divison</a>
+                    <ul>
+                        <li><a href="{% url 'view_division' %}">View</a></li>
+                        <li><a href="{% url 'create_division' %}">Create</a></li>
+                        <li><a href="{% url 'edit_division' %}">Edit</a></li>
+                        <li><a href="{% url 'delete_division' %}">Delete</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Request Material</a>
+                    <ul>
+                        <li><a href="{% url 'send_request' %}">Send Request</a></li>
+                        <li><a href="{% url 'view_history' %}">View History</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <header>
+                <h2>Material History</h2>
+                <div class="user-wrapper">
+                    <img src="{% static 'myapp/user.png' %}" alt="User" width="30">
+                    <div>
+                        <h4>{{ user.username }}</h4>
+                        <small>Supervisor</small>
+                    </div>
+                </div>
+            </header>
+            <main>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Material Name</th>
+                            <th>Quantity</th>
+                            <th>Date</th>
+                            <th>Shipping Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in materials %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ material.name }}</td>
+                            <td>{{ material.quantity }}</td>
+                            <td>{{ material.date }}</td>
+                            <td><a href="{{ material.shipping_data_url }}" class="btn btn-download">Download</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Requested Material</title>
+    <link rel="stylesheet" href="{% static 'css/warehouse.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'img/logo.png' %}" alt="Logo">
+            </div>
+            <ul>
+                <li><a href="{% url 'warehouse_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'warehouse_requested_material' %}">Requested Material</a></li>
+                <li><a href="{% url 'warehouse_send_data' %}">Send Data Material</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <header>
+                <h2>Requested Material</h2>
+                <div class="user-wrapper">
+                    <img src="{% static 'img/profile.png' %}" width="40px" height="40px" alt="profile picture">
+                    <div>
+                        <h4>Warehouse</h4>
+                        <small>Warehouse</small>
+                    </div>
+                </div>
+            </header>
+            <main>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Material Name</th>
+                            <th>Quantity</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td><button class="btn btn-send">Send</button></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td><button class="btn btn-send">Send</button></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td><button class="btn btn-send">Send</button></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td><button class="btn btn-send">Send</button></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td>XXXXXXXXXXXXXXXXX</td>
+                            <td><button class="btn btn-send">Send</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
