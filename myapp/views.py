@@ -7,22 +7,26 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
-from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm
-from .models import ResultCompareData, Material, MaterialRequest, CustomUser
+from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm, MaterialRequestForm
+from .models import ResultCompareData, Material, MaterialRequest, CustomUser, Material
 from django.core.paginator import Paginator
 
 # Fungsi CRUD Material
 @login_required
 def material_list(request):
-    materials = Material.objects.all()
-    total_material_checked = materials.count()
-    material_request_sent = MaterialRequest.objects.filter(requester=request.user).count()
+    comparison_data = ResultCompareData.objects.all()
+    material_requests = MaterialRequest.objects.all()
+    total_material_checked = comparison_data.count()
+    material_request_sent = material_requests.count()
 
-    return render(request, 'myapp/material_list.html', {
-        'materials': materials,
+    context = {
+        'comparison_data': comparison_data,
+        'material_requests': material_requests,
         'total_material_checked': total_material_checked,
         'material_request_sent': material_request_sent,
-    })
+    }
+
+    return render(request, 'myapp/material_list.html', context)
 
 @login_required
 def material_detail(request, pk):
@@ -85,7 +89,12 @@ User = get_user_model()
 
 @login_required
 def supervisor_dashboard(request):
-    return render(request, 'myapp/supervisor_dashboard.html')
+    total_material_checked = ResultCompareData.objects.count()
+    material_request_sent = MaterialRequest.objects.count()
+    return render(request, 'myapp/supervisor_dashboard.html', {
+        'total_material_checked': total_material_checked,
+        'material_request_sent': material_request_sent
+    })
 
 @login_required
 def supervisor_view_users(request):
@@ -129,13 +138,15 @@ def supervisor_delete_user(request):
 
 @login_required
 def production_dashboard(request):
-    total_material_checked = Material.objects.count()
+    total_material_checked = ResultCompareData.objects.count()
     return render(request, 'myapp/production_dashboard.html', {'total_material_checked': total_material_checked})
 
 @login_required
 def warehouse_dashboard(request):
     total_material_request = MaterialRequest.objects.count()
-    return render(request, 'myapp/warehouse_dashboard.html', {'total_material_request': total_material_request})
+    return render(request, 'myapp/warehouse_dashboard.html', {
+        'total_material_request': total_material_request,
+    })
 
 @login_required
 def warehouse_requested_material(request):
@@ -156,26 +167,32 @@ def warehouse_send_data(request):
 @login_required
 def send_request(request):
     if request.method == 'POST':
-        material_name = request.POST.get('material_name')
-        quantity = request.POST.get('quantity')
-        date = request.POST.get('date')
-        
-        # Simpan permintaan material ke database
-        MaterialRequest.objects.create(
-            requester=request.user,
-            material_name=material_name,
-            quantity=quantity,
-            date=date
-        )
-        
-        messages.success(request, 'Request sent successfully')
-        return redirect('view_history')
-    return render(request, 'myapp/supervisor_request_material.html')
+        form = MaterialRequestForm(request.POST)
+        if form.is_valid():
+            material_name = form.cleaned_data['material_name']
+            quantity = form.cleaned_data['quantity']
+            request_date = form.cleaned_data['request_date']
+
+            # Check if the material already exists, if not create it
+            material, created = Material.objects.get_or_create(name=material_name, defaults={'description': 'Default description', 'quantity': 0})
+
+            material_request = MaterialRequest(
+                material=material,
+                quantity=quantity,
+                requester=request.user,
+                request_date=request_date,
+                status='pending',
+            )
+            material_request.save()
+            return redirect('view_history')
+    else:
+        form = MaterialRequestForm()
+    return render(request, 'myapp/supervisor_request_material.html', {'form': form})
 
 @login_required
 def view_history(request):
-    materials = MaterialRequest.objects.all()
-    return render(request, 'myapp/supervisor_view_history.html', {'materials': materials})
+    material_requests = MaterialRequest.objects.all()
+    return render(request, 'myapp/supervisor_view_history.html', {'material_requests': material_requests})
 
 @login_required
 def view_division(request):

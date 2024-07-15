@@ -1,5 +1,5 @@
 from django import forms
-from .models import UploadedFile, Material, CustomUser
+from .models import UploadedFile, Material, CustomUser, MaterialRequest
 
 class UploadFileForm(forms.Form):
     warehouse_data = forms.FileField(label='File Pertama')
@@ -37,3 +37,12 @@ class UserForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
         }
+
+class MaterialRequestForm(forms.ModelForm):
+    material_name = forms.CharField(max_length=100, label='Material Name')
+    quantity = forms.IntegerField(label='Quantity')
+    request_date = forms.DateField(label='Request Date', widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = MaterialRequest
+        fields = ['material_name', 'quantity', 'request_date']

@@ -55,17 +55,17 @@
                         <th>Material Name</th>
                         <th>Quantity</th>
                         <th>Date</th>
-                        <th>Shipping Data</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for material in materials %}
+                    {% for request in material_requests %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ material.name }}</td>
-                        <td>{{ material.quantity }}</td>
-                        <td>{{ material.date }}</td>
-                        <td><a href="{{ material.shipping_data_url }}" class="btn btn-download">Download</a></td>
+                        <td>{{ request.material.name }}</td>
+                        <td>{{ request.quantity }}</td>
+                        <td>{{ request.request_date }}</td>
+                        <td>{{ request.status }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

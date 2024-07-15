@@ -54,12 +54,12 @@
                     <input type="number" id="quantity" name="quantity" required>
                 </div>
                 <div class="form-group">
-                    <label for="date"><img src="{% static 'myapp/assets/date.png' %}" alt="Date"> Date</label>
-                    <input type="date" id="date" name="date" required>
+                    <label for="request_date"><img src="{% static 'myapp/assets/date.png' %}" alt="Date"> Date</label>
+                    <input type="date" id="request_date" name="request_date" required>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-save">Submit</button>
-                    <a href="{% url 'supervisor_view_users' %}" class="btn btn-discard">Discard</a>
+                    <a href="{% url 'supervisor_dashboard' %}" class="btn btn-discard">Discard</a>
                 </div>
             </form>
         </div>

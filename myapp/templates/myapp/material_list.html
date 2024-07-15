@@ -41,39 +41,37 @@
                 <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
             </div>
         </div>
-        <div class="dashboard-cards">
-            <div class="card">
-                <h3>Total Material Checked</h3>
-                <p>{{ total_material_checked }}</p>
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Data Material</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Search Handling Unit" id="searchInput" onkeyup="searchTable()">
+                </div>
             </div>
-            <div class="card">
-                <h3>Material Request Sent</h3>
-                <p>{{ material_request_sent }}</p>
-            </div>
+            <table id="materialTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>HU Warehouse</th>
+                        <th>HU Production</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in comparison_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.HU }}</td>
+                        <td>{{ data.Source_Handling_Unit }}</td>
+                        <td class="actions">
+                            <a href="{% url 'material_edit' data.pk %}"><button class="edit">Edit</button></a>
+                            <a href="{% url 'material_delete' data.pk %}"><button class="delete">Delete</button></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for material in materials %}
-                <tr>
-                    <td>{{ material.name }}</td>
-                    <td>{{ material.description }}</td>
-                    <td>{{ material.quantity }}</td>
-                    <td class="actions">
-                        <a href="{% url 'material_edit' material.pk %}"><button class="edit">Edit</button></a>
-                        <a href="{% url 'material_delete' material.pk %}"><button class="delete">Delete</button></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
     <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
     <script>
@@ -88,6 +86,27 @@
                 this.parentElement.classList.toggle('open');
             });
         });
+
+        function searchTable() {
+            var input, filter, table, tr, td, i, j, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("materialTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 1; i < tr.length; i++) {
+                tr[i].style.display = "none";
+                td = tr[i].getElementsByTagName("td");
+                for (j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     </script>
 </body>
 </html>
