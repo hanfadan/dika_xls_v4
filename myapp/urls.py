@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -26,7 +26,7 @@ urlpatterns = [
     path('supervisor/view_history/', views.view_history, name='view_history'),
     path('supervisor/view_division/', views.view_division, name='view_division'),
     path('supervisor/create_division/', views.supervisor_create_user, name='create_division'),
-    path('supervisor/edit_division/', views.supervisor_edit_user, name='edit_division'),
+    re_path(r'^supervisor/edit_division(?:/(?P<username>[\w-]+))?/$', views.supervisor_edit_user, name='edit_division'),
     path('supervisor/delete_division/', views.supervisor_delete_user, name='delete_division'),
 
     # Production Staff URLs
@@ -39,5 +39,5 @@ urlpatterns = [
     # Warehouse Staff URLs
     path('warehouse_dashboard/', views.warehouse_dashboard, name='warehouse_dashboard'),
     path('warehouse_requested_material/', views.warehouse_requested_material, name='warehouse_requested_material'),
-    path('warehouse_send_data/', views.warehouse_send_data, name='warehouse_send_data'),
+    re_path(r'^warehouse/send_data(?:/(?P<material_id>\d+))?/$', views.warehouse_send_data, name='warehouse_send_data'),
 ]

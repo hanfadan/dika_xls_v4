@@ -55,4 +55,9 @@ class MaterialRequest(models.Model):
 
     def __str__(self):
         return f"{self.material.name} requested by {self.requester.username}"
+    
+class UploadedMaterialRequestFile(models.Model):
+    material_request = models.ForeignKey(MaterialRequest, on_delete=models.CASCADE, related_name='uploaded_files')
+    file = models.FileField(upload_to='material_request_files/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 

@@ -15,9 +15,8 @@
         <ul>
             <li><a href="{% url 'warehouse_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
             <p>Menu</p>
-                    <li><a href="{% url 'warehouse_requested_material' %}"><img src="{% static 'myapp/assets/group.png' %}">View</a></li>
-                    <li><a href="{% url 'warehouse_send_data' %}"><img src="{% static 'myapp/assets/group.png' %}">Send Data Material</a></li>
-            </li>
+            <li><a href="{% url 'warehouse_requested_material' %}"><img src="{% static 'myapp/assets/group.png' %}">View</a></li>
+            <li><a href="{% url 'warehouse_send_data' %}"><img src="{% static 'myapp/assets/group.png' %}">Send Data Material</a></li>
         </ul>
     </div>
     <div class="main-content">
@@ -42,12 +41,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for material in materials %}
+                        {% for material_request in materials %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ material.name }}</td>
-                            <td>{{ material.quantity }}</td>
-                            <td><button class="btn btn-send">Send</button></td>
+                            <td>{{ material_request.material.name }}</td>
+                            <td>{{ material_request.quantity }}</td>
+                            <td><a href="{% url 'warehouse_send_data' material_request.id %}" class="btn btn-send">Send</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>

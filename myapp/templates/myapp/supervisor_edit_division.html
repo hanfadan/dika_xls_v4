@@ -35,7 +35,7 @@
     </div>
     <div class="main-content">
         <div class="header">
-            <h1>Edit User</h1>
+            <h1>Edit Division</h1>
             <div class="user-profile">
                 <span>Supervisor</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
@@ -45,25 +45,10 @@
         <div class="form-container">
             <form method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="username"><img src="{% static 'myapp/assets/user.png' %}" alt="Username"> Username</label>
-                    <input type="text" id="username" name="username" value="{{ user.username }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="password"><img src="{% static 'myapp/assets/pass.png' %}" alt="Password"> Password</label>
-                    <input type="password" id="password" name="password">
-                </div>
-                <div class="form-group">
-                    <label for="role"><img src="{% static 'myapp/assets/division.png' %}" alt="Role"> Select Role</label>
-                    <select id="role" name="role" required>
-                        <option value="supervisor" {% if user.role == 'supervisor' %}selected{% endif %}>Admin</option>
-                        <option value="production" {% if user.role == 'production' %}selected{% endif %}>Operator Staff</option>
-                        <option value="warehouse" {% if user.role == 'warehouse' %}selected{% endif %}>Warehouse Staff</option>
-                    </select>
-                </div>
+                {{ form.as_p }}
                 <div class="form-actions">
                     <button type="submit" class="btn btn-save">Save</button>
-                    <a href="{% url 'supervisor_view_users' %}" class="btn btn-discard">Discard</a>
+                    <a href="{% url 'view_division' %}" class="btn btn-discard">Discard</a>
                 </div>
             </form>
         </div>

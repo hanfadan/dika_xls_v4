@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
-from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm, MaterialRequestForm
+from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm, MaterialRequestForm, UploadMaterialRequestFileForm
 from .models import ResultCompareData, Material, MaterialRequest, CustomUser, Material
 from django.core.paginator import Paginator
 
@@ -116,8 +116,11 @@ def supervisor_create_user(request):
 
 
 @login_required
-def supervisor_edit_user(request, username):
-    user = get_object_or_404(CustomUser, username=username)
+def supervisor_edit_user(request, username=None):
+    user = None
+    if username:
+        user = get_object_or_404(CustomUser, username=username)
+    
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
@@ -127,7 +130,8 @@ def supervisor_edit_user(request, username):
             user.save()
             return redirect('view_division')
     else:
-        form = UserForm(instance=user)
+        form = UserForm(instance=user) if user else UserForm()
+
     return render(request, 'myapp/supervisor_edit_division.html', {'form': form, 'user': user})
 
 @login_required
@@ -154,18 +158,37 @@ def warehouse_dashboard(request):
 
 @login_required
 def warehouse_requested_material(request):
-    materials = MaterialRequest.objects.all()  # Adjust the query as needed
+    materials = MaterialRequest.objects.select_related('material').all()
     return render(request, 'myapp/warehouse_requested_material.html', {'materials': materials})
 
 @login_required
-def warehouse_send_data(request):
+def warehouse_send_data(request, material_id=None):
+    if material_id:
+        material_request = get_object_or_404(MaterialRequest, pk=material_id)
+    else:
+        material_request = None
+    
     if request.method == 'POST':
-        material_data = request.FILES['material_data']
-        # Process the uploaded file as needed
-        # Save the data to the database or perform any other necessary actions
-        messages.success(request, 'Data material sent successfully.')
-        return redirect('warehouse_requested_material')
-    return render(request, 'myapp/warehouse_send_data.html')
+        form = UploadMaterialRequestFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Simpan file yang diunggah
+            uploaded_file = form.save(commit=False)
+            if material_request:
+                uploaded_file.material_request = material_request
+            uploaded_file.save()
+
+            # Ubah status material_request jika ada
+            if material_request:
+                material_request.status = 'done'
+                material_request.save()
+
+            # Redirect ke halaman requested material
+            return redirect('warehouse_requested_material')
+    else:
+        form = UploadMaterialRequestFileForm()
+
+    return render(request, 'myapp/warehouse_send_data.html', {'form': form})
+
 
 
 @login_required

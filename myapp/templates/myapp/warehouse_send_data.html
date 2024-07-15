@@ -15,9 +15,8 @@
         <ul>
             <li><a href="{% url 'warehouse_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
             <p>Menu</p>
-                    <li><a href="{% url 'warehouse_requested_material' %}"><img src="{% static 'myapp/assets/group.png' %}">View</a></li>
-                    <li><a href="{% url 'warehouse_send_data' %}"><img src="{% static 'myapp/assets/group.png' %}">Send Data Material</a></li>
-            </li>
+            <li><a href="{% url 'warehouse_requested_material' %}"><img src="{% static 'myapp/assets/group.png' %}">View</a></li>
+            <li><a href="{% url 'warehouse_send_data' %}"><img src="{% static 'myapp/assets/group.png' %}">Send Data Material</a></li>
         </ul>
     </div>
     <div class="main-content">
@@ -29,20 +28,15 @@
                 <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
             </div>
         </div>
-        <div class="content-wrapper">
-            <h2>Send Data Material</h2>
-            <div class="form-container">
-                <form action="{% url 'warehouse_send_data' %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="material_data">Choose Data Material From Main Warehouse</label>
-                        <input type="file" id="material_data" name="material_data" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-save">Send</button>
-                    </div>
-                </form>
-            </div>
+        <div class="form-container">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save">Send</button>
+                    <a href="{% url 'warehouse_requested_material' %}" class="btn btn-discard">Cancel</a>
+                </div>
+            </form>
         </div>
     </div>
     <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
