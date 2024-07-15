@@ -35,7 +35,7 @@
     </div>
     <div class="main-content">
         <div class="header">
-            <h1>Division / Delete</h1>
+            <h1>Delete User</h1>
             <div class="user-profile">
                 <span>Supervisor</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
@@ -44,7 +44,7 @@
         </div>
         <div class="table-container">
             <div class="table-header">
-                <h2>Division / Delete</h2>
+                <h2>Delete User</h2>
                 <div class="search-box">
                     <input type="text" placeholder="Search Username">
                 </div>
@@ -78,7 +78,7 @@
                     </tbody>
                 </table>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-save">Save</button>
+                    <button type="submit" class="btn btn-delete">Delete</button>
                     <a href="{% url 'supervisor_view_users' %}" class="btn btn-discard">Discard</a>
                 </div>
             </form>

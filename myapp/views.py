@@ -106,35 +106,39 @@ def supervisor_create_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'User created successfully')
-            return redirect('supervisor_view_users')
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('view_division')
     else:
         form = UserForm()
-    return render(request, 'myapp/supervisor_create_user.html', {'form': form})
+    return render(request, 'myapp/supervisor_create_division.html', {'form': form})
+
 
 @login_required
-def supervisor_edit_user(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+def supervisor_edit_user(request, username):
+    user = get_object_or_404(CustomUser, username=username)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'User updated successfully')
-            return redirect('supervisor_view_users')
+            user = form.save(commit=False)
+            if form.cleaned_data['password']:
+                user.set_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('view_division')
     else:
         form = UserForm(instance=user)
-    return render(request, 'myapp/supervisor_edit_user.html', {'form': form})
+    return render(request, 'myapp/supervisor_edit_division.html', {'form': form, 'user': user})
 
 @login_required
 def supervisor_delete_user(request):
     if request.method == 'POST':
         user_ids = request.POST.getlist('user_ids')
-        User.objects.filter(id__in=user_ids).delete()
-        messages.success(request, 'Users deleted successfully')
-        return redirect('supervisor_view_users')
-    users = User.objects.all()
-    return render(request, 'myapp/supervisor_delete_user.html', {'users': users})
+        if user_ids:
+            CustomUser.objects.filter(id__in=user_ids).delete()
+            return redirect('view_division')
+    users = CustomUser.objects.all()
+    return render(request, 'myapp/supervisor_delete_division.html', {'users': users})
 
 @login_required
 def production_dashboard(request):

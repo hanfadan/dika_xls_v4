@@ -1,5 +1,7 @@
 from django import forms
 from .models import UploadedFile, Material, CustomUser, MaterialRequest
+from django.contrib.auth.forms import UserCreationForm
+
 
 class UploadFileForm(forms.Form):
     warehouse_data = forms.FileField(label='File Pertama')
