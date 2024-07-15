@@ -134,7 +134,24 @@ def production_dashboard(request):
 
 @login_required
 def warehouse_dashboard(request):
-    return render(request, 'myapp/warehouse_dashboard.html')
+    total_material_request = MaterialRequest.objects.count()
+    return render(request, 'myapp/warehouse_dashboard.html', {'total_material_request': total_material_request})
+
+@login_required
+def warehouse_requested_material(request):
+    materials = MaterialRequest.objects.all()  # Adjust the query as needed
+    return render(request, 'myapp/warehouse_requested_material.html', {'materials': materials})
+
+@login_required
+def warehouse_send_data(request):
+    if request.method == 'POST':
+        material_data = request.FILES['material_data']
+        # Process the uploaded file as needed
+        # Save the data to the database or perform any other necessary actions
+        messages.success(request, 'Data material sent successfully.')
+        return redirect('warehouse_requested_material')
+    return render(request, 'myapp/warehouse_send_data.html')
+
 
 @login_required
 def send_request(request):

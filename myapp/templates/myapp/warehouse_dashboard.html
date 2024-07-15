@@ -4,41 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/warehouse.css' %}">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'img/logo.png' %}" alt="Logo">
-            </div>
-            <ul>
-                <li><a href="{% url 'warehouse_dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'warehouse_requested_material' %}">Requested Material</a></li>
-                <li><a href="{% url 'warehouse_send_data' %}">Send Data Material</a></li>
-            </ul>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="{% static 'myapp/assets/logo.png' %}" alt="Logo">
+            <p>Warehouse Panel</p>
         </div>
-        <div class="main-content">
-            <header>
-                <h2>Home</h2>
-                <div class="user-wrapper">
-                    <img src="{% static 'img/profile.png' %}" width="40px" height="40px" alt="profile picture">
-                    <div>
-                        <h4>Warehouse</h4>
-                        <small>Warehouse</small>
-                    </div>
-                </div>
-            </header>
-            <main>
-                <h2>Welcome, operator!</h2>
-                <div class="cards">
-                    <div class="card-single">
-                        <h3>Total Material Request</h3>
-                        <span>XXX</span>
-                    </div>
-                </div>
-            </main>
+        <ul>
+            <li><a href="{% url 'warehouse_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
+            <p>Menu</p>
+                    <li><a href="{% url 'warehouse_requested_material' %}"><img src="{% static 'myapp/assets/group.png' %}">View</a></li>
+                    <li><a href="{% url 'warehouse_send_data' %}"><img src="{% static 'myapp/assets/group.png' %}">Send Data Material</a></li>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>Welcome, warehouse!</h1>
+            <div class="user-profile">
+                <span>Warehouse</span>
+                <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
+                <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+            </div>
+        </div>
+        <div class="dashboard-cards">
+            <div class="card">
+                <h3>Total Material Request</h3>
+                <p>{{ total_material_request }}</p>
+            </div>
         </div>
     </div>
+    <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
 </body>
 </html>

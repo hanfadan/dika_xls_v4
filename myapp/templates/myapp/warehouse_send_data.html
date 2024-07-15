@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Requested Material</title>
+    <title>Send Data Material</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
 </head>
@@ -22,7 +22,7 @@
     </div>
     <div class="main-content">
         <div class="header">
-            <h1>Requested Material</h1>
+            <h1>Send Data Material</h1>
             <div class="user-profile">
                 <span>Warehouse</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
@@ -30,28 +30,18 @@
             </div>
         </div>
         <div class="content-wrapper">
-            <h2>Requested Material</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Material Name</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for material in materials %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ material.name }}</td>
-                            <td>{{ material.quantity }}</td>
-                            <td><button class="btn btn-send">Send</button></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <h2>Send Data Material</h2>
+            <div class="form-container">
+                <form action="{% url 'warehouse_send_data' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="material_data">Choose Data Material From Main Warehouse</label>
+                        <input type="file" id="material_data" name="material_data" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-save">Send</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -36,4 +36,6 @@ urlpatterns = [
 
     # Warehouse Staff URLs
     path('warehouse_dashboard/', views.warehouse_dashboard, name='warehouse_dashboard'),
+    path('warehouse_requested_material/', views.warehouse_requested_material, name='warehouse_requested_material'),
+    path('warehouse_send_data/', views.warehouse_send_data, name='warehouse_send_data'),
 ]
