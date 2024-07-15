@@ -52,9 +52,13 @@
                     </div>
                 </form>
             </div>
-            {% if compared_data %}
+            {% if page_obj %}
             <div class="result-container">
                 <h2>Comparison Results</h2>
+                <form method="get" action="{% url 'production_compare_data' %}">
+                    <input type="text" name="search" placeholder="Search HU" value="{{ search_query }}">
+                    <button type="submit">Search</button>
+                </form>
                 <table>
                     <thead>
                         <tr>
@@ -66,7 +70,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for row in compared_data %}
+                        {% if has_results %}
+                        {% for row in page_obj.object_list %}
                         <tr>
                             <td>{{ row.HU }}</td>
                             <td>{{ row.QTY }}</td>
@@ -75,8 +80,30 @@
                             <td>{{ row.Hasil_Perbandingan }}</td>
                         </tr>
                         {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="5">No results found for "{{ search_query }}".</td>
+                        </tr>
+                        {% endif %}
                     </tbody>
                 </table>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?search={{ search_query }}&page=1">&laquo; first</a>
+                            <a href="?search={{ search_query }}&page={{ page_obj.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        </span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?search={{ search_query }}&page={{ page_obj.next_page_number }}">next</a>
+                            <a href="?search={{ search_query }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
             </div>
             {% endif %}
         </div>

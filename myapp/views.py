@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm
 from .models import ResultCompareData, Material, MaterialRequest, CustomUser
+from django.core.paginator import Paginator
 
 # Fungsi CRUD Material
 @login_required
@@ -262,7 +263,6 @@ def compare_excel_files(file1_path, file2_path):
 
 @login_required
 def production_compare_data(request):
-    compared_data = None
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -277,22 +277,30 @@ def production_compare_data(request):
             file2_path = fs.path(filename2)
             compared_data = compare_excel_files(file1_path, file2_path)
 
-            for index, row in compared_data.iterrows():
-                result = ResultCompareData(
-                    HU=row['HU'],
-                    QTY=row['QTY'],
-                    Src_Trgt_Qty_AUoM=row['Src_Trgt_Qty_AUoM'],
-                    Source_Handling_Unit=row['Source_Handling_Unit'],
-                    Hasil_Perbandingan=row['Hasil_Perbandingan']
-                )
-                result.save()
-
             request.session['compared_data'] = compared_data.to_dict(orient='records')
-            compared_data = compared_data.to_dict(orient='records')
+
+            return redirect('production_compare_data')
     else:
         form = UploadFileForm()
 
-    return render(request, 'myapp/production_check_data.html', {'form': form, 'compared_data': compared_data})
+    compared_data = request.session.get('compared_data', [])
+    search_query = request.GET.get('search', '')
+
+    filtered_data = compared_data
+    if search_query:
+        filtered_data = [row for row in compared_data if search_query.lower() in row['HU'].lower()]
+
+    paginator = Paginator(filtered_data, 10)  # Show 10 results per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'myapp/production_check_data.html', {
+        'form': form,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'has_results': bool(filtered_data),
+        'compared_data': compared_data
+    })
 
 @login_required
 def download_comparison_excel(request):
