@@ -1,19 +1,14 @@
 from django import forms
 from .models import UploadedFile, Material, CustomUser
-from django.contrib.auth import get_user_model
 
-class UploadFileForm(forms.ModelForm):
-    file1 = forms.FileField(label='File Pertama')
-    file2 = forms.FileField(label='File Kedua')
-
-    class Meta:
-        model = UploadedFile
-        fields = ['file1', 'file2']
+class UploadFileForm(forms.Form):
+    warehouse_data = forms.FileField(label='File Pertama')
+    production_data = forms.FileField(label='File Kedua')
 
     def clean(self):
         cleaned_data = super().clean()
-        file1 = cleaned_data.get('file1')
-        file2 = cleaned_data.get('file2')
+        file1 = cleaned_data.get('warehouse_data')
+        file2 = cleaned_data.get('production_data')
 
         if not file1:
             raise forms.ValidationError("File pertama tidak ditemukan.")

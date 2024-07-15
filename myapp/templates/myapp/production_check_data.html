@@ -27,6 +27,7 @@
                 <span>Operator</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
                 <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
             </div>
         </div>
         <div class="content-wrapper">
@@ -51,6 +52,33 @@
                     </div>
                 </form>
             </div>
+            {% if compared_data %}
+            <div class="result-container">
+                <h2>Comparison Results</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>HU</th>
+                            <th>QTY</th>
+                            <th>Src_Trgt_Qty_AUoM</th>
+                            <th>Source_Handling_Unit</th>
+                            <th>Comparison Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in compared_data %}
+                        <tr>
+                            <td>{{ row.HU }}</td>
+                            <td>{{ row.QTY }}</td>
+                            <td>{{ row.Src_Trgt_Qty_AUoM }}</td>
+                            <td>{{ row.Source_Handling_Unit }}</td>
+                            <td>{{ row.Hasil_Perbandingan }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
     </div>
     <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
@@ -59,13 +87,6 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('collapsed');
         }
-
-        document.querySelectorAll('.has-submenu > a').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                this.parentElement.classList.toggle('open');
-            });
-        });
     </script>
 </body>
 </html>

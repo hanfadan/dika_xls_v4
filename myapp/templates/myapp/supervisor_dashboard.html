@@ -38,7 +38,7 @@
             <div class="user-profile">
                 <span>Supervisor</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
-                <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+                <a href="{% url 'logout' %}"><img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon"></a>
             </div>
         </div>
         <div class="dashboard-cards">

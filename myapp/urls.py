@@ -1,12 +1,14 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
     path('', views.login_view, name='login'),
-    path('upload/', views.upload_file, name='upload_file'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    # path('upload/', views.production_compare_data, name='upload_file'),
     path('download/', views.download_comparison_excel, name='download_comparison_excel'),
     path('download/data', views.download_full_data, name='download_full_data'),
-    
+
     # Materials CRUD URLs
     path('materials/', views.material_list, name='material_list'),
     path('materials/new/', views.material_create, name='material_create'),
@@ -30,9 +32,9 @@ urlpatterns = [
     # Production Staff URLs
     path('production_dashboard/', views.production_dashboard, name='production_dashboard'),
     path('production_check_data/', views.production_check_data, name='production_check_data'),
-    path('production_compare_data/', views.compare_excel_files, name='production_compare_data'),
-    path('production_download_data_view/', views.production_download_data_view, name='production_download_data_view'), # Tampilan halaman download data
-    path('download_full_data/', views.download_full_data, name='download_full_data'), # Proses download data
+    path('production_compare_data/', views.production_compare_data, name='production_compare_data'),
+    path('production_download_data_view/', views.production_download_data_view, name='production_download_data_view'),
+    path('download_full_data/', views.download_full_data, name='download_full_data'),
 
     # Warehouse Staff URLs
     path('warehouse_dashboard/', views.warehouse_dashboard, name='warehouse_dashboard'),
