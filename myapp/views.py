@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from .forms import LoginForm, UploadFileForm, MaterialForm, UserForm, MaterialRequestForm, UploadMaterialRequestFileForm
 from .models import ResultCompareData, Material, MaterialRequest, CustomUser, Material
+from .forms import ResultCompareDataForm
 from django.core.paginator import Paginator
 
 # Fungsi CRUD Material
@@ -30,11 +31,6 @@ def material_list(request):
     return render(request, 'myapp/material_list.html', context)
 
 @login_required
-def material_detail(request, pk):
-    material = get_object_or_404(Material, pk=pk)
-    return render(request, 'myapp/material_detail.html', {'material': material})
-
-@login_required
 def material_create(request):
     if request.method == 'POST':
         form = MaterialForm(request.POST)
@@ -47,19 +43,19 @@ def material_create(request):
 
 @login_required
 def material_edit(request, pk):
-    material = get_object_or_404(Material, pk=pk)
+    material = get_object_or_404(ResultCompareData, pk=pk)
     if request.method == 'POST':
-        form = MaterialForm(request.POST, instance=material)
+        form = ResultCompareDataForm(request.POST, instance=material)
         if form.is_valid():
             form.save()
             return redirect('material_list')
     else:
-        form = MaterialForm(instance=material)
+        form = ResultCompareDataForm(instance=material)
     return render(request, 'myapp/material_form.html', {'form': form})
 
 @login_required
 def material_delete(request, pk):
-    material = get_object_or_404(Material, pk=pk)
+    material = get_object_or_404(ResultCompareData, pk=pk)
     if request.method == 'POST':
         material.delete()
         return redirect('material_list')

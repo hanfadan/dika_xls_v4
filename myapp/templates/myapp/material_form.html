@@ -1,15 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{% if form.instance.pk %}Edit{% else %}New{% endif %} Material</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Data Material</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/css/styles.css' %}">
 </head>
 <body>
-    <h1>{% if form.instance.pk %}Edit{% else %}New{% endif %} Material</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-    <a href="{% url 'material_list' %}">Cancel</a>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="{% static 'myapp/assets/logo.png' %}" alt="Logo">
+            <p>Supervisor Panel</p>
+        </div>
+        <ul>
+            <li><a href="{% url 'supervisor_dashboard' %}"><img src="{% static 'myapp/assets/dashboard.png' %}" alt="Dashboard"> Dashboard</a></li>
+            <p>Menu</p>
+            <li><a href="{% url 'material_list' %}"><img src="{% static 'myapp/assets/group.png' %}" alt="Group"> Data Material</a></li>
+            <li class="has-submenu"><a href="#"><img src="{% static 'myapp/assets/group.png' %}" alt="Group"> Division</a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'view_division' %}">View</a></li>
+                    <li><a href="{% url 'create_division' %}">Create</a></li>
+                    <li><a href="{% url 'edit_division' %}">Edit</a></li>
+                    <li><a href="{% url 'delete_division' %}">Delete</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu"><a href="#"><img src="{% static 'myapp/assets/group.png' %}" alt="Request"> Request Material</a>
+                <ul class="sub-menu">
+                    <li><a href="{% url 'send_request' %}">Send Request</a></li>
+                    <li><a href="{% url 'view_history' %}">View History</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>Edit Data</h1>
+            <div class="user-profile">
+                <span>Supervisor</span>
+                <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                        <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="HU"><img src="{% static 'myapp/assets/material.png' %}" alt="Material Name"> Handling Unit (HU)</label>
+                    <input type="text" id="HU" name="HU" value="{{ form.HU.value }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="Source_Handling_Unit"><img src="{% static 'myapp/assets/quantity.png' %}" alt="Quantity"> Source Handling Unit</label>
+                    <input type="text" id="Source_Handling_Unit" name="Source_Handling_Unit" value="{{ form.Source_Handling_Unit.value }}" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save">Save</button>
+                    <a href="{% url 'material_list' %}" class="btn btn-discard">Discard</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <button id="toggleSidebar" onclick="toggleSidebar()">☰</button>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
 </body>
 </html>

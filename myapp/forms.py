@@ -1,5 +1,5 @@
 from django import forms
-from .models import UploadedFile, Material, CustomUser, MaterialRequest, UploadedMaterialRequestFile
+from .models import UploadedFile, Material, CustomUser, MaterialRequest, UploadedMaterialRequestFile, ResultCompareData
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -53,3 +53,8 @@ class UploadMaterialRequestFileForm(forms.ModelForm):
     class Meta:
         model = UploadedMaterialRequestFile
         fields = ['file']
+
+class ResultCompareDataForm(forms.ModelForm):
+    class Meta:
+        model = ResultCompareData
+        fields = ['HU', 'Source_Handling_Unit']
