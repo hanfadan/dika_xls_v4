@@ -70,7 +70,13 @@
                         <td>{{ request.material.name }}</td>
                         <td>{{ request.quantity }}</td>
                         <td>{{ request.request_date }}</td>
-                        <td>{{ request.status }}</td>
+                        <td>
+                            {% if request.status == 'done' and request.file_url %}
+                                <a href="{% url 'download_file' request.file_url %}">Download</a>
+                            {% else %}
+                                {{ request.status }}
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -52,6 +52,7 @@ class MaterialRequest(models.Model):
     quantity = models.IntegerField()
     request_date = models.DateField()
     status = models.CharField(max_length=20, default='pending')
+    file_url = models.CharField(max_length=255, blank=True, null=True)  # Add this line
 
     def __str__(self):
         return f"{self.material.name} requested by {self.requester.username}"

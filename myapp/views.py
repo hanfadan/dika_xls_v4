@@ -3,7 +3,8 @@ import pandas as pd
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+import os
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
@@ -167,29 +168,24 @@ def warehouse_send_data(request, material_id=None):
         material_request = get_object_or_404(MaterialRequest, pk=material_id)
     else:
         material_request = None
-    
+
     if request.method == 'POST':
         form = UploadMaterialRequestFileForm(request.POST, request.FILES)
         if form.is_valid():
-            # Simpan file yang diunggah
             uploaded_file = form.save(commit=False)
             if material_request:
                 uploaded_file.material_request = material_request
-            uploaded_file.save()
-
-            # Ubah status material_request jika ada
-            if material_request:
+                uploaded_file.save()
+                # Update the material request status and file_url
                 material_request.status = 'done'
+                material_request.file_url = uploaded_file.file.name  # Assuming the file field is 'file'
                 material_request.save()
 
-            # Redirect ke halaman requested material
             return redirect('warehouse_requested_material')
     else:
         form = UploadMaterialRequestFileForm()
 
     return render(request, 'myapp/warehouse_send_data.html', {'form': form})
-
-
 
 @login_required
 def send_request(request):
@@ -367,3 +363,13 @@ def download_full_data(request):
         response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename={output_file}'
         return response
+
+@login_required
+def download_file(request, file_path):
+    file_path = os.path.join(settings.MEDIA_ROOT, file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = f'inline; filename={os.path.basename(file_path)}'
+            return response
+    raise Http404

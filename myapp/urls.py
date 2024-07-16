@@ -18,8 +18,6 @@ urlpatterns = [
     # Supervisor URLs
     path('supervisor_dashboard/', views.supervisor_dashboard, name='supervisor_dashboard'),
     path('supervisor/view_users/', views.supervisor_view_users, name='supervisor_view_users'),
-    # path('supervisor/create_user/', views.supervisor_create_user, name='supervisor_create_user'),
-    # path('supervisor/edit_user/<int:user_id>/', views.supervisor_edit_user, name='supervisor_edit_user'),
     path('supervisor/delete_user/', views.supervisor_delete_user, name='supervisor_delete_user'),
     path('supervisor/send_request/', views.send_request, name='send_request'),
     path('supervisor/view_history/', views.view_history, name='view_history'),
@@ -39,4 +37,5 @@ urlpatterns = [
     path('warehouse_dashboard/', views.warehouse_dashboard, name='warehouse_dashboard'),
     path('warehouse_requested_material/', views.warehouse_requested_material, name='warehouse_requested_material'),
     re_path(r'^warehouse/send_data(?:/(?P<material_id>\d+))?/$', views.warehouse_send_data, name='warehouse_send_data'),
+    path('download/<path:file_path>/', views.download_file, name='download_file'),
 ]
