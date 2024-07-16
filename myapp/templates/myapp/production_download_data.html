@@ -26,7 +26,12 @@
             <div class="user-profile">
                 <span>Operator</span>
                 <img src="{% static 'myapp/assets/pp.png' %}" alt="Profile Picture" class="profile-pic">
-                <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                        <img src="{% static 'myapp/assets/vector.png' %}" alt="Settings" class="settings-icon">
+                    </button>
+                </form>
             </div>
         </div>
         <div class="content-wrapper">

@@ -4,8 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.login_view, name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    # path('upload/', views.production_compare_data, name='upload_file'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('download/', views.download_comparison_excel, name='download_comparison_excel'),
     path('download/data', views.download_full_data, name='download_full_data'),
 

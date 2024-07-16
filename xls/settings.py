@@ -49,7 +49,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # 'myapp.middleware.RoleRequiredMiddleware',
 ]
 
 ROOT_URLCONF = "xls.urls"
@@ -133,4 +132,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = 'login'  # Redirect to login page after logout
+LOGOUT_REDIRECT_URL = 'login'
