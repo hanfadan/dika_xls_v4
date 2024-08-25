@@ -2,7 +2,6 @@ from django import forms
 from .models import UploadedFile, Material, CustomUser, MaterialRequest, UploadedMaterialRequestFile, ResultCompareData
 from django.contrib.auth.forms import UserCreationForm
 
-
 class UploadFileForm(forms.Form):
     warehouse_data = forms.FileField(label='File Pertama')
     production_data = forms.FileField(label='File Kedua')
@@ -24,9 +23,11 @@ class UploadFileForm(forms.Form):
             raise forms.ValidationError("Ukuran file terlalu besar. Maksimum 10 MB diizinkan.")
 
 class MaterialForm(forms.ModelForm):
+    material_id = forms.CharField(label='Material ID', max_length=100, required=True)
+    
     class Meta:
         model = Material
-        fields = ['name', 'description', 'quantity']
+        fields = ['material_id', 'name', 'description', 'quantity']
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100)
@@ -41,13 +42,14 @@ class UserForm(forms.ModelForm):
         }
 
 class MaterialRequestForm(forms.ModelForm):
+    material_id = forms.CharField(max_length=100, label='Material ID', required=True)
     material_name = forms.CharField(max_length=100, label='Material Name')
     quantity = forms.IntegerField(label='Quantity')
     request_date = forms.DateField(label='Request Date', widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = MaterialRequest
-        fields = ['material_name', 'quantity', 'request_date']
+        fields = ['material_id', 'material_name', 'quantity', 'request_date']
 
 class UploadMaterialRequestFileForm(forms.ModelForm):
     class Meta:

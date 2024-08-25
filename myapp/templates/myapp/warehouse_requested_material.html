@@ -40,6 +40,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Material ID</th>
                             <th>Material Name</th>
                             <th>Quantity</th>
                             <th>Action</th>
@@ -49,6 +50,7 @@
                         {% for material_request in materials %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
+                            <td>{{ material_request.material.material_id }}</td>
                             <td>{{ material_request.material.name }}</td>
                             <td>{{ material_request.quantity }}</td>
                             <td><a href="{% url 'warehouse_send_data' material_request.id %}" class="btn btn-send">Send</a></td>

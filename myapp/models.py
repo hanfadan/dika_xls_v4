@@ -25,26 +25,27 @@ class CustomUser(AbstractUser):
     
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='custom_user_set',  # Tambahkan related_name
+        related_name='custom_user_set',
         blank=True,
         help_text='The groups this user belongs to.',
         verbose_name='groups',
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='custom_user_set',  # Tambahkan related_name
+        related_name='custom_user_set',
         blank=True,
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
     )
 
 class Material(models.Model):
+    material_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
-    quantity = models.IntegerField()
-
+    quantity = models.IntegerField(default=0)  # Tambahkan nilai default
     def __str__(self):
         return self.name
+
 
 class MaterialRequest(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
@@ -52,7 +53,7 @@ class MaterialRequest(models.Model):
     quantity = models.IntegerField()
     request_date = models.DateField()
     status = models.CharField(max_length=20, default='pending')
-    file_url = models.CharField(max_length=255, blank=True, null=True)  # Add this line
+    file_url = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.material.name} requested by {self.requester.username}"
@@ -61,4 +62,3 @@ class UploadedMaterialRequestFile(models.Model):
     material_request = models.ForeignKey(MaterialRequest, on_delete=models.CASCADE, related_name='uploaded_files')
     file = models.FileField(upload_to='material_request_files/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-

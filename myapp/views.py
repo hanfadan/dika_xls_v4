@@ -188,12 +188,16 @@ def send_request(request):
     if request.method == 'POST':
         form = MaterialRequestForm(request.POST)
         if form.is_valid():
+            material_id = form.cleaned_data['material_id']  # Ensure material_id is captured
             material_name = form.cleaned_data['material_name']
             quantity = form.cleaned_data['quantity']
             request_date = form.cleaned_data['request_date']
 
             # Check if the material already exists, if not create it
-            material, created = Material.objects.get_or_create(name=material_name, defaults={'description': 'Default description', 'quantity': 0})
+            material, created = Material.objects.get_or_create(
+                material_id=material_id,  # Use material_id for lookup
+                defaults={'name': material_name, 'description': 'Default description', 'quantity': quantity}
+            )
 
             material_request = MaterialRequest(
                 material=material,
